@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    command: python app.py
+    environment:
+      - DD_ENV=cox-test
+    volumes:
+      - .:/code
+    ports:
+      - 8080:8080
+
+  pg:
+    image: postgres:10.5-alpine
+    environment:
+        - POSTGRES_PASSWORD=postgres
+        - POSTGRES_USER=postgres
+        - POSTGRES_DB=postgres
+
+  datadog:
+    image: datadog/agent:latest
+    environment:
+      - DD_API_KEY=${DD_API_KEY}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
+
+volumes:
+  staticfiles:
