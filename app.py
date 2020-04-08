@@ -6,13 +6,13 @@ from tracers import asyncpg_connection
 import db
 
 app = Sanic()
-tracer = sanic_opentracer.init_tracer('sanic-apm.test.anandh.local', 'localhost', '8126')
+tracer = sanic_opentracer.init_tracer('sanic-apm.test.anandh.local', 'datadog', '8126')
 tracer = sanic_opentracer.SanicTracing(tracer, app)
 
 @app.listener("before_server_start")
 async def register_db(app, loop):
     await db.register_db(
-            {'host':'localhost', 'user':'appuser', 'password': '', 'database': 'postgres'},
+            {'host':'pg', 'user':'postgres', 'password': 'postgres', 'database': 'postgres'},
             asyncpg_connection.TracingConnection,
             loop
         )
